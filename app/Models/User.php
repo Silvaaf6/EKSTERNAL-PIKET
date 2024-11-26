@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Jadwal;
+use App\Models\Karyawan;
+use App\Models\Piket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -61,4 +64,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Piket::class, 'id_user');
     }
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        // Mengambil data karyawan yang terkait dengan user
+        $karyawan = $this->karyawan;
+
+        // Jika ada cover di tabel karyawan, gunakan cover tersebut
+        return $karyawan && $karyawan->cover
+        ? asset('images/karyawan/' . $karyawan->cover)
+        : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
 }

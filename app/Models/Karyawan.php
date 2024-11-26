@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Karyawan extends Model
 {
@@ -14,4 +15,12 @@ class Karyawan extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+
+    public function deleteImage()
+    {
+        if ($this->cover && file_exists(public_path('images/karyawan/' . $this->cover))) {
+            return unlink(public_path('images/karyawan/' . $this->cover));
+        }
+    }
 }
+
