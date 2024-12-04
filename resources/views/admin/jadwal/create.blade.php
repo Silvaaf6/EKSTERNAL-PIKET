@@ -8,7 +8,6 @@
     <form action="{{ route('jadwal.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-            <!-- Pilih User -->
             <label class="block text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Nama User</span>
                 <select
@@ -21,7 +20,6 @@
                 </select>
             </label>
 
-            <!-- Pilih Hari -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Hari</span>
                 <select
@@ -38,7 +36,6 @@
                 </select>
             </label>
 
-            <!-- Submit Button -->
             <label class="px-6 my-6">
                 <button type="submit"
                     class="flex items-center justify-center px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">

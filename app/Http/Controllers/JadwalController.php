@@ -6,7 +6,7 @@ use Alert;
 use App\Models\Jadwal;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;  
+use Illuminate\Support\Facades\DB;
 
 class JadwalController extends Controller
 {
@@ -15,7 +15,15 @@ class JadwalController extends Controller
      */
     public function index()
     {
-        $jadwal = Jadwal::select('hari')->distinct()->paginate(5); // Ambil hanya hari tanpa duplikasi
+        if (auth()->user()->hasRole('admin')) {
+            $jadwal = Jadwal::select('hari')->distinct()->paginate(5);
+        } elseif (auth()->user()->hasRole('user')) {
+            $jadwal = Jadwal::with('user')
+                ->select('hari', 'id_user')
+                ->get()
+                ->groupBy('hari');
+        }
+
         return view('admin.jadwal.index', compact('jadwal'));
     }
 
@@ -24,7 +32,7 @@ class JadwalController extends Controller
      */
     public function create()
     {
-        $user = User::role('user')->get(); // Hanya user dengan role 'user' yang diambil
+        $user = User::role('user')->get();
         return view('admin.jadwal.create', compact('user'));
     }
 
@@ -60,13 +68,11 @@ class JadwalController extends Controller
 
     public function show($hari)
     {
-        // Ambil jadwal berdasarkan hari yang dipilih
-        // Pastikan hanya mengambil user yang memiliki role 'user'
         $jadwal = Jadwal::where('hari', $hari)
             ->whereHas('user', function ($query) {
-                $query->role('user'); // Filter user yang memiliki role 'user'
+                $query->role('user'); // filter user yang memiliki role 'user'
             })
-            ->with('user') // Muat relasi user
+            ->with('user')
             ->get();
 
         return view('admin.jadwal.show', compact('jadwal', 'hari'));
@@ -88,16 +94,14 @@ class JadwalController extends Controller
         //
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        // Menghapus user dari jadwal_piket berdasarkan user_id
         DB::table('jadwals')->where('id_user', $id)->delete();
-    
-            Alert::success('Sukses', 'User berhasil dihapus dari jadwal piket!')->autoClose(1000);
-            return redirect()->route('jadwal.index');
+
+        Alert::success('Sukses', 'User berhasil dihapus dari jadwal piket!')->autoClose(1000);
+        return redirect()->route('jadwal.index');
     }
 }

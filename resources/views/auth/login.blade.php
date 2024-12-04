@@ -4,7 +4,6 @@
 <div class="flex items-center justify-center w-full h-screen bg-gray-100 absolute top-0 left-0">
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h2 class="text-2xl font-bold text-center text-gray-800">{{ __('Login') }}</h2>
-        <p class="text-sm text-center text-gray-500 mb-6">Welcome back! Please login to your account.</p>
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-4">

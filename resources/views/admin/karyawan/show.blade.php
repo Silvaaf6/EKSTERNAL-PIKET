@@ -2,10 +2,8 @@
 
 @section('content')
     <div class="bg-white rounded-lg shadow-md overflow-hidden dark:bg-gray-800 mt-4">
-        <!-- Wrapper untuk membuat tabel scrollable -->
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
-                <!-- Header tabel -->
                 <thead>
                     <tr>
                         <th colspan="2"
@@ -44,7 +42,9 @@
                     </tr>
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <td class="px-6 py-4 font-medium text-gray-700 dark:text-gray-400">Tanggal Lahir</td>
-                        <td class="px-6 py-4">{{ $user->karyawan->tgl_lahir }}</td>
+                        <td class="px-6 py-4">
+                            {{ \Carbon\Carbon::parse($user->karyawan->tgl_lahir)->format('d-m-Y') }}
+                        </td>
                     </tr>
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <td class="px-6 py-4 font-medium text-gray-700 dark:text-gray-400">Agama</td>

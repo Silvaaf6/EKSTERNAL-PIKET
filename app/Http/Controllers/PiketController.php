@@ -13,12 +13,10 @@ class PiketController extends Controller
  */
     public function index()
     {
-        // Jika yang login adalah admin, tampilkan semua piket yang dibuat oleh user
         if (Auth::user()->hasRole('admin')) {
-            $piket = Piket::where('id_user', '!=', Auth::id())->get(); // Semua data piket yang bukan dari admin
+            $piket = Piket::where('id_user', '!=', Auth::id())->paginate(5);
         } else {
-            // Jika yang login adalah user, hanya tampilkan piket yang dibuat oleh user tersebut
-            $piket = Piket::where('id_user', Auth::id())->get();
+            $piket = Piket::where('id_user', Auth::id())->paginate(5);
         }
 
         return view('admin.piket.index', compact('piket'));
@@ -29,12 +27,11 @@ class PiketController extends Controller
  */
     public function create()
     {
-        // Pastikan hanya user dengan role 'user' yang bisa melihat halaman create
         if (Auth::user()->hasRole('admin')) {
             return redirect()->route('admin.piket.index')->with('error', 'Admin tidak dapat membuat piket');
         }
 
-        return view('admin.piket.index'); // Mengarahkan ke halaman create yang sesuai
+        return view('admin.piket.index');
     }
 
 /**
@@ -42,24 +39,20 @@ class PiketController extends Controller
  */
     public function store(Request $request)
     {
-        // Validasi inputan
         $validated = $request->validate([
             'jam_mulai' => 'required',
             'jam_berakhir' => 'required',
             'keterangan' => 'required|string|max:255',
         ]);
 
-        // Membuat objek Piket dan menyimpannya
         $piket = new Piket();
         $piket->jam_mulai = $request->jam_mulai;
         $piket->jam_berakhir = $request->jam_berakhir;
         $piket->keterangan = $request->keterangan;
-        $piket->id_user = Auth::id(); // Menyimpan ID user yang login
+        $piket->id_user = Auth::id();
 
-        // Menyimpan data ke database
         $piket->save();
 
-        // Redirect setelah berhasil menyimpan
         return redirect()->route('piket.index')->with('success', 'Data berhasil ditambahkan!');
     }
 

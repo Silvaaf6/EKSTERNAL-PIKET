@@ -8,7 +8,6 @@
         @csrf
         @method('PUT')
         <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-            <!-- Input untuk Nama -->
             <label class="block text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Nama</span>
                 <input
@@ -19,7 +18,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Email -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Email</span>
                 <input
@@ -30,7 +28,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk NIK -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">NIK</span>
                 <input
@@ -41,7 +38,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Sampul -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Sampul</span>
                 @if ($user->karyawan->cover)
@@ -56,7 +52,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Tempat Lahir -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Tempat Lahir</span>
                 <input
@@ -68,7 +63,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Tanggal Lahir -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Tanggal Lahir</span>
                 <input
@@ -80,7 +74,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Agama -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Agama</span>
                 <select
@@ -103,7 +96,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Alamat -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Alamat</span>
                 <textarea
@@ -114,7 +106,6 @@
                 @enderror
             </label>
 
-            <!-- Input untuk Jenis Kelamin -->
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Jenis Kelamin</span>
                 <select
@@ -132,7 +123,6 @@
                 @enderror
             </label>
 
-            <!-- Button Simpan -->
             <div class="mt-6">
                 <button type="submit"
                     class="w-full py-2 px-4 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">

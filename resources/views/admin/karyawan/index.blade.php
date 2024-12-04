@@ -14,15 +14,11 @@
                         <th class="px-4 py-3">No</th>
                         <th class="px-4 py-3">Nama Karyawan</th>
                         <th class="px-4 py-3">Email</th>
-                        {{-- <th class="px-4 py-3">Status</th> --}}
                         <th class="px-4 py-3">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                    {{-- @php $no = ($user->currentPage() - 1) * $user->perPage() + 1; @endphp --}}
-                    @php
-                        $no = 1;
-                    @endphp
+                    @php $no = ($user->currentPage() - 1) * $user->perPage() + 1; @endphp
                     @foreach ($user as $data)
                         <tr class="text-gray-700 dark:text-gray-400">
                             <td class="px-4 py-3 text-sm">
@@ -66,5 +62,8 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="mt-4">
+        {{ $user->links() }}
     </div>
 @endsection

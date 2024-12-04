@@ -16,13 +16,16 @@ Auth::routes([
     'register' => false,
 ]);
 
-Route::get('/home', [UserController::class, 'home'])->name('home');
+Route::middleware('auth')->group(function () {
+    Route::resource('karyawan', UserController::class);
+    Route::resource('jadwal', JadwalController::class);
+    Route::resource('piket', PiketController::class);
+
+    Route::get('/home', [UserController::class, 'home'])->name('home');
+});
+
+
 // Route::get('/home', [PiketController::class, 'home'])->name('home');
-
-
-Route::resource('karyawan', UserController::class);
-Route::resource('jadwal', JadwalController::class);
-Route::resource('piket', PiketController::class);
 
 // Route::get('jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 // Route::get('jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');

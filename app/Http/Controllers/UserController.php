@@ -7,28 +7,46 @@ use App\Models\Karyawan;
 use App\Models\Piket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // public function home()
-    // {
-    //     $user = auth()->user()->load('karyawan');
-    //     return view('home', compact('user'));
-    // }
-
-    public function home()
+    public function home(Request $request)
     {
-        $piket = Piket::with('user')->get();
-        $totalUsers = User::role('user')->count(); // Hitung hanya user dengan role 'user'
-        return view('home', compact('totalUsers', 'piket'));
+        $tanggal = $request->input('tanggal');
+        $user = Auth::user();
+
+        $itemsPerPage = 5;
+
+        $piket = Piket::query()
+            ->when($user->hasRole('user'), function ($query) use ($user) {
+                $query->where('id_user', $user->id);
+            })
+            ->when($user->hasRole('admin'), function ($query) {
+                $query->whereHas('user', function ($subQuery) {
+                    $subQuery->whereHas('roles', function ($roleQuery) {
+                        $roleQuery->where('name', 'user');
+                    });
+                });
+            })
+            ->when($tanggal, function ($query) use ($tanggal) {
+                $query->whereDate('created_at', $tanggal);
+            })
+            ->with('user')
+            ->paginate($itemsPerPage);
+
+        $totalUsers = $user->hasRole('admin') ? User::role('user')->count() : null;
+
+        return view('home', compact('totalUsers', 'piket', 'user', 'tanggal'));
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $user = User::role('user')->with('karyawan')->get();
+        $user = User::role('user')->with('karyawan')->paginate(2);
         return view('admin.karyawan.index', compact('user'));
     }
 
@@ -47,15 +65,15 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'password' => 'required|min:8',
-            'nik' => 'required|max:16|unique:karyawans,nik',
+            'nik' => 'required',
             'tempat_lahir' => 'required',
             'tgl_lahir' => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
             'agama' => 'required',
-            'alamat' => 'required|max:500',
-            'jenis_kelamin' => 'required|in:perempuan,laki-laki',
-            'no_telp' => 'required|max:15',
+            'alamat' => 'required',
+            'jenis_kelamin' => 'required',
+            'no_telp' => 'required',
             'cover' => 'required|mimes:jpg,jpeg,png|max:65535',
         ], [
             'name.required' => 'Nama harus diisi',
@@ -71,7 +89,6 @@ class UserController extends Controller
             'cover.required' => 'Foto harus diisi',
         ]);
 
-        // INI UNTUK MEMBUAT USER
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -80,7 +97,6 @@ class UserController extends Controller
 
         $user->assignRole('user');
 
-        // INI UNTUK MEMBUAT KARYAWAN / PROFILE NYA
         $karyawan = new Karyawan([
             'id_user' => $user->id,
             'nik' => $request->nik,
@@ -92,12 +108,11 @@ class UserController extends Controller
             'no_telp' => $request->no_telp,
         ]);
 
-        // INI BUAT UPLOAD GAMBAR
         if ($request->hasFile('cover')) {
             $img = $request->file('cover');
             $name = time() . '-' . $img->getClientOriginalName();
             $img->move(public_path('images/karyawan/'), $name);
-            $karyawan->cover = $name; // Simpan nama file di kolom cover
+            $karyawan->cover = $name;
         }
 
         $karyawan->save();
@@ -136,7 +151,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|max:255|unique:users,email,' . $id,
             'nik' => 'required|max:16',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'cover' => 'required|mimes:jpg,jpeg,png|max:65535',
             'tempat_lahir' => 'required',
             'tgl_lahir' => 'required|date',
             'agama' => 'required',
@@ -156,20 +171,14 @@ class UserController extends Controller
         $karyawan->alamat = $request->input('alamat');
         $karyawan->jenis_kelamin = $request->input('jenis_kelamin');
 
-        // BUAT UPLOAD GAMBAR
         if ($request->hasFile('cover')) {
-            // INI BUAT HAPUS GAMBAR LAMA JIKA ADA YANG BARU
             if ($karyawan->cover && file_exists(public_path('images/karyawan/' . $karyawan->cover))) {
                 unlink(public_path('images/karyawan/' . $karyawan->cover));
             }
 
-            // INI BUAT UPLOAD GAMBAR
             $cover = $request->file('cover');
-            // INI BUAT MENYIMPAN NAMA GAMBAR MENJADI HASH
             $coverName = time() . '.' . $cover->getClientOriginalExtension();
             $cover->move(public_path('images/karyawan'), $coverName);
-
-            // BUAT MENYIMPAN NAMA GAMBAR KE DATABASE
             $karyawan->cover = $coverName;
         }
 
@@ -186,18 +195,14 @@ class UserController extends Controller
     public function destroy($id)
     {
 
-        //BUAT NYARI DATA USER BERDASARKAN ID
         $user = User::findOrFail($id);
-
-        // CARI NAMA KARYAWAN BERDASARKAN ID YANG DIPILIH
         $karyawan = Karyawan::where('id_user', $id)->first();
 
-        // BUAT HAPUS KARYAWAN JIKA TERHUBUNG DENGAN ID USER
+        // hapus karyawan kalo terhubung ke id user
         if ($karyawan) {
             $karyawan->delete();
         }
 
-        // MENGHAPUS DATA USER
         $user->delete();
 
         Alert::success('Sukses', 'Data Berhasil Dihapus!')->autoClose(1000);

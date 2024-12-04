@@ -78,11 +78,11 @@
             <label class="block mt-4 text-sm">
                 <span class="text-gray-700 dark:text-gray-400">Jenis Kelamin</span>
                 <select
-                    class="block w-full mt-1 text-sm text-gray-400 dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+                    class="block w-full mt-1 text-sm  dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                     name="jenis_kelamin" id="jenis_kelamin" required>
-                    <option value="" disabled selected>Jenis Kelamin</option>
-                    <option value="perempuan" class="text-black">Perempuan</option>
-                    <option value="laki-laki" class="text-black">Laki-laki</option>
+                    <option value="" disabled selected class="text-gray-400">Jenis Kelamin</option>
+                    <option value="Perempuan" class="text-black">Perempuan</option>
+                    <option value="Laki-laki" class="text-black">Laki-laki</option>
                 </select>
             </label>
 

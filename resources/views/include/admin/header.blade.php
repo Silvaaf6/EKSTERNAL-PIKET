@@ -24,12 +24,12 @@
             <!-- Search input -->
             <div class="flex justify-center flex-1 lg:mr-32">
             </div>
-            <ul class="flex items-center flex-shrink-0 space-x-6">                
+            <ul class="flex items-center flex-shrink-0 space-x-6">
                 <!-- Profile menu -->
                 <li class="relative">
                     @role('admin')
                         <!-- Button untuk admin: menampilkan nama -->
-                        <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"
+                        <button class="text-black align-middle focus:outline-none"
                                 @click="toggleProfileMenu" @keydown.escape="closeProfileMenu" aria-label="Account"
                                 aria-haspopup="true">
                             {{ Auth::user()->name }}
@@ -52,7 +52,7 @@
                             @keydown.escape="closeProfileMenu"
                             class="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:border-gray-700 dark:text-gray-300 dark:bg-gray-700"
                             aria-label="submenu">
-                            
+
                             <li class="flex">
                                 <a class="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                                     href="{{ route('logout') }}"
